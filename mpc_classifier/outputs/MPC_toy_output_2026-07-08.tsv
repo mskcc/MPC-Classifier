@@ -1,0 +1,3 @@
+Patient_ID	START_DATES	MPC_COUNT	TOPOLOGIES	MORPHOLOGIES	CANCER_TYPES	STAGE	SUMMARY	MORPHOLOGIES_DESC	SIDES	DESC_DEDUP	SYNCHRONOUS
+000001	[12346, 12346]	2	['C504', 'C508']	['M8500/3', 'M8500/3']	['BREAST', 'BREAST']	[2.0, 3.0]	[<NA>, <NA>]	['adenocarcinomas', 'adenocarcinomas']	[1, 2]	[]	synchronous
+000003	[12341, 52346]	2	['C679', 'C673']	['M8120/3', 'M8120/3']	['BLADDER_UROTHELIAL', 'BLADDER_UROTHELIAL']	[3.0, 4.0]	[<NA>, <NA>]	['squamous_and_transitional_cell_carcinoma', 'squamous_and_transitional_cell_carcinoma']	[0, 0]	[]	metachronous

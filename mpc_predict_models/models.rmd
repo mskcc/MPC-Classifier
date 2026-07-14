@@ -1,0 +1,65 @@
+Run Toy Data Through the Models
+
+This notebook runs on **synthetic (mock) toy data**, not real patient records.
+
+Load Libraries
+```{r}
+if (!requireNamespace("tidyverse", quietly = TRUE)) {
+  install.packages("tidyverse")
+}
+library(tidyverse)
+```
+
+Load Toy Data
+```{r}
+# Synthetic dataset — fabricated records used only to exercise the pipeline.
+toy_data_breast_ovary <- read.csv("toy_data_breast_ovary.csv")
+
+```
+
+Load Pre-Defined Model
+```{r}
+# Saved  LASSO coefficients from the penalized Fine-Gray model seen in Supplementary Table 5
+coef_df <- readRDS("final_model_breast_ovary_se_coefs.rds")
+
+```
+
+
+
+Run Model on Toy Data
+```{r}
+# Check that all model predictors are present in the toy dataset.
+stopifnot(all(coef_df$variable %in% names(toy_data_breast_ovary)))
+
+
+# Build the design matrix using ONLY the model's predictors, in coefficient order.
+X_toy_data <- as.matrix(toy_data_breast_ovary[, coef_df$variable, drop = FALSE])
+
+# Linear predictor (X %*% beta).
+# NOTE: this is a relative risk score for ranking patients.
+lp_mpc_predict <- as.numeric(X_toy_data %*% coef_df$coefficient)
+```
+
+Plot Density of Linear Predictor
+```{r}
+# The x-axis is the relative risk score; use it to compare/rank patients,
+# top 5% highest-risk patients within this cohort.
+d_ranking <- density(lp_mpc_predict)
+cutoff_95_ranking <- quantile(lp_mpc_predict, 0.95)
+plot(d_ranking,
+     main = "Density Plot of Linear Predictor (Risk Score)",
+     xlab = "Linear Predictor (Risk Score)",
+     col  = "steelblue",
+     lwd  = 2)
+polygon(d_ranking, col = "lightblue", border = "steelblue")
+# Top 5% cutoff (relative, within-cohort)
+abline(v = cutoff_95_ranking, col = "red", lwd = 2, lty = 2)
+text(x = cutoff_95_ranking,
+     y = max(d_ranking$y) * 0.9,
+     labels = "High Risk (top 5%)",
+     pos = 4,
+     col = "red")
+```
+
+
+
