@@ -40,13 +40,18 @@ def expand_code_range(code_range):
 
 
 def expand_morphology_groups(raw_groups):
-    """Expand ranges and individual codes"""
-    expanded = {}
-    for group, code_list in raw_groups.items():
-        expanded[group] = []
-        for item in code_list:
-            expanded[group].extend(expand_code_range(item))
-    return expanded
+    """Expand morphology code ranges and individual codes into
+       their corresponding list of formatted morphology codes."""
+    try:
+        expanded = {}
+        for group, code_list in raw_groups.items():
+            expanded[group] = []
+            for item in code_list:
+                expanded[group].extend(expand_code_range(item))
+        return expanded
+    except Exception:
+        logger.exception(f"Failed to expand morphology group '%s'.", group)
+        raise
 
 # Expand raw morphology group config into full list of formatted codes
 MORPHOLOGY_GROUPS = expand_morphology_groups(RAW_MORPHOLOGY_GROUPS)
